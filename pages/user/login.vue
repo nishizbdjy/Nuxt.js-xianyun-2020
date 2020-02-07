@@ -1,15 +1,15 @@
 <template>
-  <div class="container">
-    首页
+  <div class="user">
+      用户登陆首页
   </div>
 </template>
 
 <script>
-
 export default {
 
 }
 </script>
 
 <style>
+
 </style>

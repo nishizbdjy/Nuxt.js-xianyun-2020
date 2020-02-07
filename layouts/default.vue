@@ -3,13 +3,17 @@
     <!-- header -->
     <Header />
     <nuxt />
+    <!-- footer -->
+    <Footer/>
   </div>
 </template>
 <script>
 import Header from "@/components/header.vue";
+import Footer from "@/components/footer.vue";
 export default {
   components: {
-    Header //头部
+    Header, //头部
+    Footer//页脚
   }
 };
 </script>

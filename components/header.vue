@@ -42,7 +42,15 @@ export default {};
 .center {
   flex: 1;
   margin: 0 20px;
+  .nuxt-link-exact-active {
+  background-color: #409eff;
+  color: #fff;
+  &:hover {
+    color: #fff !important;
+  }
+}
   a {
+      display: block;
     box-sizing: border-box;
     padding: 0 20px;
     height: 60px;
@@ -67,6 +75,7 @@ export default {};
   box-shadow: 0 3px 0 #f5f5f5;
   z-index: 2;
   min-width: 1000px;
+  box-sizing: border-box;
 }
 /deep/.header {
   width: 1000px;
@@ -82,13 +91,7 @@ export default {};
     }
   }
 }
-.nuxt-link-exact-active {
-  background-color: #409eff;
-  color: #fff;
-  &:hover {
-    color: #fff !important;
-  }
-}
+
 .el-dropdown-link{
     cursor: pointer;
 

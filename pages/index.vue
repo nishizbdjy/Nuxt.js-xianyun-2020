@@ -16,7 +16,12 @@
       <div class="search-bar">
         <!-- tab栏 -->
         <el-row type="flex" class="search-tab">
-          <span v-for="(item,index) in tab" :key="index" :class="{ active:suoyin === index}" @click="alter(index)">
+          <span
+            v-for="(item,index) in tab"
+            :key="index"
+            :class="{ active:suoyin === index}"
+            @click="alter(index)"
+          >
             <i>{{item.title}}</i>
           </span>
         </el-row>
@@ -64,7 +69,11 @@ export default {
     //切换tab
     alter(index) {
       this.suoyin = index;
+      //点击机票跳转到机票页
+      if(index ==2){
+        this.$router.push('/air')
     }
+  }
   }
 };
 </script>

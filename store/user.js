@@ -8,3 +8,18 @@ export const mutations = {
         state.userinfo = data
     }
 }
+//异步储存的方法
+export const actions = {
+    login(store, data) {
+        console.log(this);
+       return this.$axios({
+            url: "/accounts/login",
+            method: "post",
+            data
+        }).then(res => {
+            const { data } = res;
+            //存储到state
+            store.commit("stockpile", data);
+        });
+    }
+}

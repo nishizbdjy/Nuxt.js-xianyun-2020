@@ -48,7 +48,18 @@ export default {
       this.$refs.form.validate(valid => {
         //如果成功
         if (valid) {
-          
+          this.$axios({
+            url: "/accounts/login",
+            method: "post",
+            data: this.form
+          }).then(res => {
+            console.log(res);
+            const { data } = res;
+            console.log(data);
+            
+            //存储到state
+            this.$store.commit("user/stockpile", data);
+          });
         } else {
           this.$message("数据不合法");
         }

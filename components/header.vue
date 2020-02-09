@@ -19,13 +19,20 @@
       <!-- 登陆后的状态 -->
       <el-dropdown v-if="$store.state.user.userinfo.token">
         <span class="el-dropdown-link">
-            <img :src="$axios.defaults.baseURL+$store.state.user.userinfo.user.defaultAvatar" alt />
-        {{$store.state.user.userinfo.user.nickname}}
-          <i data-v-1992e634 class="el-icon-caret-bottom el-icon--right"></i>
+          <img :src="$axios.defaults.baseURL+$store.state.user.userinfo.user.defaultAvatar" alt />
+          {{$store.state.user.userinfo.user.nickname}}
+          <i
+            data-v-1992e634
+            class="el-icon-caret-bottom el-icon--right"
+          ></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>个人中心</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item>
+            <nuxt-link to="/#">个人中心</nuxt-link>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <div @click="tuichu">退出</div>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <!-- 登陆/注册 -->
@@ -35,7 +42,22 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    //退出登录
+    tuichu() {
+      //重新赋空值
+      this.$store.commit("user/stockpile", {
+        token: "",
+        user: {}
+      });
+      this.$message.success("退出成功");
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>

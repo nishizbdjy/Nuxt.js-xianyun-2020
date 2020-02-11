@@ -38,7 +38,13 @@
       </el-form-item>
       <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
-        <el-date-picker type="date" placeholder="请选择日期" style="width: 100%;" @change="handleDate"></el-date-picker>
+        <el-date-picker
+          type="date"
+          placeholder="请选择日期"
+          style="width: 100%;"
+          v-model="form.departDate"
+          @change="handleDate"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label>
         <el-button style="width:100%;" type="primary" icon="el-icon-search" @click="handleSubmit">搜索</el-button>
@@ -51,6 +57,8 @@
 </template>
 
 <script>
+//引入日期插件
+import moment from "moment";
 export default {
   data() {
     return {
@@ -69,7 +77,7 @@ export default {
       //防止用户没点击出发城市的数据
       chufa: [],
       //防止用户没点击目标城市的数据
-      mubiao:[]
+      mubiao: []
     };
   },
   methods: {
@@ -107,12 +115,12 @@ export default {
       }
     },
     //目标城市失焦
-    mubiaoBlur(){
-        if(this.mubiao.length!==0){
+    mubiaoBlur() {
+      if (this.mubiao.length !== 0) {
         //根据自己需求，默认选中第一个
         this.form.destCity = this.mubiao[0].value;
         this.form.destCode = this.mubiao[0].sort;
-        }
+      }
     },
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
@@ -152,10 +160,30 @@ export default {
     },
 
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      //是要插件将日期转换为我们想要的格式
+      this.form.departDate = moment(value).format("YYYY-MM-DD");
+    },
 
     // 触发和目标城市切换时触发
-    handleReverse() {},
+    handleReverse() {
+      //   //解构出来
+      //   const { departCity, departCode, destCity, destCode } = this.form;
+      //   //交换赋值
+      //   this.form.departCity = destCity;
+      //   this.form.departCode = destCode;
+
+      //   this.form.destCity = departCity;
+      //   this.form.destCode = departCode;
+      [this.form.departCity, this.form.destCity] = [
+        this.form.destCity,
+        this.form.departCity
+      ];
+      [this.form.departCode, this.form.destCode] = [
+        this.form.destCode,
+        this.form.departCode
+      ];
+    },
 
     // 提交表单是触发
     handleSubmit() {

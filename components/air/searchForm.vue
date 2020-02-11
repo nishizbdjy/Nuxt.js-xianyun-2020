@@ -187,7 +187,17 @@ export default {
 
     // 提交表单是触发
     handleSubmit() {
-      console.log(this.form);
+      //   console.log(this.form);
+      //跳转到机票列表页
+      if (!this.form.departCity) {
+        this.$message("请填写出发城市");
+      } else if (!this.form.destCity) {
+        this.$message("请填写目标城市");
+      } else if (!this.form.departDate) {
+        this.$message("请填写日期");
+      } else {
+        this.$router.push({ path: "/flights", query: this.form });
+      }
     }
   },
   mounted() {}

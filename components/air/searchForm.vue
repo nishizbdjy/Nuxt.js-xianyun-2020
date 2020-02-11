@@ -18,14 +18,17 @@
         <!-- fetch-suggestions 返回输入建议的方法 -->
         <!-- select 点击选中建议项时触发 -->
         <el-autocomplete
+          v-model="form.departCity"
           :fetch-suggestions="queryDepartSearch"
           placeholder="请搜索出发城市"
           @select="handleDepartSelect"
+          @blur="chufaBlur"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
       <el-form-item label="到达城市">
         <el-autocomplete
+          v-model="form.destCity"
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
           @select="handleDestSelect"
@@ -54,7 +57,16 @@ export default {
         { icon: "iconfont icondancheng", name: "单程" },
         { icon: "iconfont iconshuangxiang", name: "往返" }
       ],
-      currentTab: 0
+      currentTab: 0,
+      form: {
+        departCity: "", //出发的城市
+        departCode: "", //出发城市英文
+        destCity: "", //到达城市
+        destCode: "", //到达城市英文
+        departDate: "" //日期
+      },
+      //防止用户没点击出发城市的数据
+      chufa: []
     };
   },
   methods: {
@@ -64,17 +76,44 @@ export default {
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
-      cb([{ value: 1 }, { value: 2 }, { value: 3 }]);
+      if (value) {
+        this.$axios({
+          url: "/airs/city",
+          params: {
+            name: value
+          }
+        }).then(res => {
+          const { data } = res.data;
+          //改造数据添加value
+          let newData = data.map(v => {
+            v.value = v.name.replace("市", "");
+            return v;
+          });
+          //防止用户没点击，存在出发数组里面
+          this.chufa = newData;
+          //给回调函数返回
+          cb(newData);
+        });
+      }
     },
-
+    //防止用户没点击，出发城市失焦时触发
+    chufaBlur() {
+      if (this.chufa.length !== 0) {
+        //根据自己需求，默认选中第一个
+        this.form.departCity = this.chufa[0].value;
+        this.form.departCode = this.chufa[0].sort;
+      }
+    },
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDestSearch(value, cb) {
-      cb([{ value: 1 }, { value: 2 }, { value: 3 }]);
-    },
+    queryDestSearch(value, cb) {},
 
     // 出发城市下拉选择时触发
-    handleDepartSelect(item) {},
+    handleDepartSelect(item) {
+    //   console.log(item);
+      this.form.departCity = item.value; //赋值给出发城市
+      this.form.departCode = item.sort; //出发城市英文名
+    },
 
     // 目标城市下拉选择时触发
     handleDestSelect(item) {},
@@ -86,7 +125,9 @@ export default {
     handleReverse() {},
 
     // 提交表单是触发
-    handleSubmit() {}
+    handleSubmit() {
+      console.log(this.form);
+    }
   },
   mounted() {}
 };

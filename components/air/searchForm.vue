@@ -32,6 +32,7 @@
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
           @select="handleDestSelect"
+          @blur="mubiaoBlur"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
@@ -66,13 +67,14 @@ export default {
         departDate: "" //日期
       },
       //防止用户没点击出发城市的数据
-      chufa: []
+      chufa: [],
+      //防止用户没点击目标城市的数据
+      mubiao:[]
     };
   },
   methods: {
     // tab切换时触发
     handleSearchTab(item, index) {},
-
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
@@ -104,19 +106,50 @@ export default {
         this.form.departCode = this.chufa[0].sort;
       }
     },
+    //目标城市失焦
+    mubiaoBlur(){
+        if(this.mubiao.length!==0){
+        //根据自己需求，默认选中第一个
+        this.form.destCity = this.mubiao[0].value;
+        this.form.destCode = this.mubiao[0].sort;
+        }
+    },
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
-    queryDestSearch(value, cb) {},
+    queryDestSearch(value, cb) {
+      if (value) {
+        this.$axios({
+          url: "/airs/city",
+          params: {
+            name: value
+          }
+        }).then(res => {
+          const { data } = res.data;
+          //改造数据添加value
+          let newData = data.map(v => {
+            v.value = v.name.replace("市", "");
+            return v;
+          });
+          //防止用户没点击，存在出发数组里面
+          this.mubiao = newData;
+          //给回调函数返回
+          cb(newData);
+        });
+      }
+    },
 
     // 出发城市下拉选择时触发
     handleDepartSelect(item) {
-    //   console.log(item);
+      //   console.log(item);
       this.form.departCity = item.value; //赋值给出发城市
       this.form.departCode = item.sort; //出发城市英文名
     },
 
     // 目标城市下拉选择时触发
-    handleDestSelect(item) {},
+    handleDestSelect(item) {
+      this.form.destCity = item.value; //赋值给目标城市
+      this.form.destCode = item.sort; //目标城市英文名
+    },
 
     // 确认选择日期时触发
     handleDate(value) {},

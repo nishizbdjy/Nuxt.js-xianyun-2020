@@ -72,7 +72,7 @@ export default {
     this.$axios({
       url:'/airs/sale',
     }).then((res)=>{
-      console.log(res);
+      // console.log(res);
       const {data} = res.data
       this.specialPriceList = data
     })

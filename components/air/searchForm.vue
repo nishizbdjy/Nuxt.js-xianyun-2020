@@ -44,6 +44,7 @@
           style="width: 100%;"
           v-model="form.departDate"
           @change="handleDate"
+          :picker-options="pickerOptions"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label>
@@ -77,7 +78,13 @@ export default {
       //防止用户没点击出发城市的数据
       chufa: [],
       //防止用户没点击目标城市的数据
-      mubiao: []
+      mubiao: [],
+      //控制日期可选项
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() + 3600 * 1000 * 24 < Date.now();
+        }
+      }
     };
   },
   methods: {

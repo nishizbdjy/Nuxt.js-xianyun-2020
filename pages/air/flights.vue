@@ -7,10 +7,13 @@
         <div></div>
 
         <!-- 航班头部布局 -->
-       <flightsListHead/>
+       <FlightsListHead/>
 
         <!-- 航班信息 -->
-        <div></div>
+        <FlightsItem v-for="(item,index) in FlighsListdata"
+         :key="index"
+         :data="item"
+         />
       </div>
 
       <!-- 侧边栏 -->
@@ -23,15 +26,32 @@
 
 <script>
 //引入头部
-import flightsListHead from "@/components/air/flightsListHead.vue";
-
+import FlightsListHead from "@/components/air/flightsListHead.vue";
+//机票列表组件
+import FlightsItem from '@/components/air/flightsItem.vue'
 export default {
   data() {
-    return {};
+    return {
+      //机票列表数据
+      FlighsListdata: {}
+    };
   },
   components:{
-    flightsListHead//头部组件
-  }
+    FlightsListHead,//头部组件
+    FlightsItem,//机票列表组件s
+  },
+  mounted(){
+     //获取机票列表
+     this.$axios({
+       url : '/airs',
+       params:this.$route.query
+     }).then(res=>{
+       console.log(res);
+       //将列表信息解构出来
+       const {flights} = res.data
+       this.FlighsListdata = flights
+     })
+  },
 };
 </script>
 

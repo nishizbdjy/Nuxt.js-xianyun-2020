@@ -1,10 +1,11 @@
 <template>
   <div class="flight-item">
-    <div>
+    <div   @click="inShow=!inShow">
       <!-- 显示的机票信息 -->
       <el-row type="flex" align="middle" class="flight-info">
         <el-col :span="6">
-          <span>{{data.airline_name}}</span> {{data.flight_no}}
+          <span>{{data.airline_name}}</span>
+          {{data.flight_no}}
         </el-col>
         <el-col :span="12">
           <el-row type="flex" justify="space-between" class="flight-info-center">
@@ -29,12 +30,20 @@
     </div>
     <div class="flight-recommend">
       <!-- 隐藏的座位信息列表 -->
-      <el-row type="flex" justify="space-between" align="middle">
+      <el-row type="flex" justify="space-between" align="middle" v-if="inShow">
         <el-col :span="4">低价推荐</el-col>
-        <el-col :span="20" >
-          <el-row type="flex" justify="space-between" align="middle" class="flight-sell"  v-for="(value,index) in data.seat_infos" :key="index">
+        <el-col :span="20">
+          <el-row
+            type="flex"
+            justify="space-between"
+            align="middle"
+            class="flight-sell"
+            v-for="(value,index) in data.seat_infos"
+            :key="index"
+          >
             <el-col :span="16" class="flight-sell-left">
-              <span>{{value.name}}</span> | {{value.supplierName}}
+              <span>{{value.name}}</span>
+              | {{value.supplierName}}
             </el-col>
             <el-col :span="5" class="price">￥{{value.settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
@@ -57,6 +66,12 @@ export default {
       // 默认是空数组
       default: {}
     }
+  },
+  data() {
+    return {
+      //显示子列表的
+      inShow: false
+    };
   }
 };
 </script>

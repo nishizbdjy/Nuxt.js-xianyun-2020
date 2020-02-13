@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <FlightsFilters :data="FlighsListdata"/>
+        <FlightsFilters :data="Flighsdata" @getData="getDataShijian" />
         <!-- 航班头部布局 -->
         <FlightsListHead />
 
@@ -36,16 +36,23 @@ import FlightsListHead from "@/components/air/flightsListHead.vue";
 //机票列表组件
 import FlightsItem from "@/components/air/flightsItem.vue";
 //筛选模块
-import FlightsFilters from '@/components/air/flightsFilters.vue'
+import FlightsFilters from "@/components/air/flightsFilters.vue";
 export default {
   data() {
     return {
+      //筛选的拷贝的机票列表
+      Flighsdata: {
+        info: {},
+        flights: [],
+        options: {},
+        total: ""
+      },
       //机票列表数据
       FlighsListdata: {
-        info:{},
-        flights:[],
-        options:{},
-        total:''
+        info: {},
+        flights: [],
+        options: {},
+        total: ""
       },
       pageIndex: 1, //当前页码
       pageSize: 5, //显示条数
@@ -55,7 +62,7 @@ export default {
   components: {
     FlightsListHead, //头部组件
     FlightsItem, //机票列表组件
-    FlightsFilters,//筛选组件
+    FlightsFilters //筛选组件
   },
   mounted() {
     //获取机票列表
@@ -65,6 +72,8 @@ export default {
     }).then(res => {
       // console.log(res);
       this.FlighsListdata = res.data;
+      //拷贝一份
+      this.Flighsdata = {...res.data}
       //将总条数赋值
       this.zongshu = res.data.total;
     });
@@ -92,6 +101,13 @@ export default {
     //切换页码时处触发
     handleCurrentChange(val) {
       this.pageIndex = val;
+    },
+    //筛选是子组件传递的事件
+    getDataShijian(arr) {
+      //赋值给机票列表
+      this.FlighsListdata.flights = arr;
+      //总数量
+      this.zongshu = arr.length;
     }
   }
 };

@@ -29,12 +29,22 @@
       </el-col>
       <el-col :span="4">
         <el-select size="mini" v-model="company" placeholder="航空公司" @change="handleCompany">
-          <el-option v-for="(item,index) in data.options.company" :key="index" :label="item" :value="item"></el-option>
+          <el-option
+            v-for="(item,index) in data.options.company"
+            :key="index"
+            :label="item"
+            :value="item"
+          ></el-option>
         </el-select>
       </el-col>
       <el-col :span="4">
         <el-select size="mini" v-model="airSize" placeholder="机型" @change="handleAirSize">
-          <el-option v-for="(item,index) in plane_size" :key="index" :label="item.name" :value="item.size"></el-option>
+          <el-option
+            v-for="(item,index) in plane_size"
+            :key="index"
+            :label="item.name"
+            :value="item.size"
+          ></el-option>
         </el-select>
       </el-col>
     </el-row>
@@ -57,18 +67,18 @@ export default {
     return {
       //机场的大小
       plane_size: [
-          {
-              name: '大',
-              size:'L'
-          },
-          {
-              name: '中',
-              size:'M'
-          },
-          {
-              name: '小',
-              size: 'S'
-          }
+        {
+          name: "大",
+          size: "L"
+        },
+        {
+          name: "中",
+          size: "M"
+        },
+        {
+          name: "小",
+          size: "S"
+        }
       ],
       airport: "", // 机场
       flightTimes: "", // 出发时间
@@ -84,7 +94,15 @@ export default {
     handleFlightTimes(value) {},
 
     // 选择航空公司时候触发
-    handleCompany(value) {},
+    handleCompany(value) {
+      //循环判断满足条件
+      const newarr = this.data.flights.filter(v => {
+        return v.airline_name === value;
+      });
+      console.log(newarr);
+      //发送事件给父组件
+      this.$emit('getData',newarr)
+    },
 
     // 选择机型时候触发
     handleAirSize(value) {},

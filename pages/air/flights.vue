@@ -7,13 +7,20 @@
         <div></div>
 
         <!-- 航班头部布局 -->
-       <FlightsListHead/>
+        <FlightsListHead />
 
         <!-- 航班信息 -->
-        <FlightsItem v-for="(item,index) in FlighsListdata"
-         :key="index"
-         :data="item"
-         />
+        <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item" />
+        <!-- 分页组件 -->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageIndex"
+          :page-sizes="[5, 10, 15, 20]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="zongshu"
+        ></el-pagination>
       </div>
 
       <!-- 侧边栏 -->
@@ -28,30 +35,59 @@
 //引入头部
 import FlightsListHead from "@/components/air/flightsListHead.vue";
 //机票列表组件
-import FlightsItem from '@/components/air/flightsItem.vue'
+import FlightsItem from "@/components/air/flightsItem.vue";
 export default {
   data() {
     return {
       //机票列表数据
-      FlighsListdata: {}
+      FlighsListdata: [],
+      pageIndex: 1, //当前页码
+      pageSize: 5, //显示条数
+      zongshu: 0 //总数
     };
   },
-  components:{
-    FlightsListHead,//头部组件
-    FlightsItem,//机票列表组件s
+  components: {
+    FlightsListHead, //头部组件
+    FlightsItem //机票列表组件
   },
-  mounted(){
-     //获取机票列表
-     this.$axios({
-       url : '/airs',
-       params:this.$route.query
-     }).then(res=>{
-       console.log(res);
-       //将列表信息解构出来
-       const {flights} = res.data
-       this.FlighsListdata = flights
-     })
+  mounted() {
+    //获取机票列表
+    this.$axios({
+      url: "/airs",
+      params: this.$route.query
+    }).then(res => {
+      // console.log(res);
+      //将列表信息解构出来
+      const { flights, total } = res.data;
+      this.FlighsListdata = flights;
+      this.zongshu = total;
+    });
   },
+  computed: {
+    dataList() {
+      //没有值返回空数组
+      if (this.FlighsListdata.length === 0) {
+        return [];
+      } else {
+        //slice截取返回一个新的数组
+        const arr = this.FlighsListdata.slice(
+          (this.pageIndex - 1) * this.pageSize,
+          this.pageSize * this.pageIndex
+        );
+        return arr;
+      }
+    }
+  },
+  methods: {
+    //切换每页显示数时触发
+    handleSizeChange(val) {
+      this.pageSize = val;
+    },
+    //切换页码时处触发
+    handleCurrentChange(val) {
+      this.pageIndex = val;
+    }
+  }
 };
 </script>
 

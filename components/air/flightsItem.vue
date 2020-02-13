@@ -28,9 +28,9 @@
         </el-col>
       </el-row>
     </div>
-    <div class="flight-recommend">
+    <div class="flight-recommend" v-if="inShow">
       <!-- 隐藏的座位信息列表 -->
-      <el-row type="flex" justify="space-between" align="middle" v-if="inShow">
+      <el-row type="flex" justify="space-between" align="middle">
         <el-col :span="4">低价推荐</el-col>
         <el-col :span="20">
           <el-row

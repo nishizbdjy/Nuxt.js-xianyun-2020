@@ -200,7 +200,7 @@ export default {
       } else if (!this.form.departDate) {
         this.$message("请填写日期");
       } else {
-        this.$router.push({ path: "/flights", query: this.form });
+        this.$router.push({ path: "/air/flights", query: this.form });
       }
     },
     huoquChengshi(value) {

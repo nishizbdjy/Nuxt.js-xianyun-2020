@@ -4,7 +4,7 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <FlightsFilters/>
+        <FlightsFilters :data="FlighsListdata"/>
         <!-- 航班头部布局 -->
         <FlightsListHead />
 
@@ -41,7 +41,12 @@ export default {
   data() {
     return {
       //机票列表数据
-      FlighsListdata: [],
+      FlighsListdata: {
+        info:{},
+        flights:[],
+        options:{},
+        total:''
+      },
       pageIndex: 1, //当前页码
       pageSize: 5, //显示条数
       zongshu: 0 //总数
@@ -59,10 +64,9 @@ export default {
       params: this.$route.query
     }).then(res => {
       // console.log(res);
-      //将列表信息解构出来
-      const { flights, total } = res.data;
-      this.FlighsListdata = flights;
-      this.zongshu = total;
+      this.FlighsListdata = res.data;
+      //将总条数赋值
+      this.zongshu = res.data.total;
     });
   },
   computed: {
@@ -72,7 +76,7 @@ export default {
         return [];
       } else {
         //slice截取返回一个新的数组
-        const arr = this.FlighsListdata.slice(
+        const arr = this.FlighsListdata.flights.slice(
           (this.pageIndex - 1) * this.pageSize,
           this.pageSize * this.pageIndex
         );

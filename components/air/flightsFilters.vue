@@ -52,6 +52,8 @@
       筛选：
       <el-button type="primary" round plain size="mini" @click="handleFiltersCancel">撤销</el-button>
     </div>
+    <!-- 计算属性必须调用一次 -->
+    <span>{{filter}}</span>
   </div>
 </template>
 
@@ -86,49 +88,95 @@ export default {
       airSize: "" // 机型大小
     };
   },
-  methods: {
-    // 选择机场时候触发
-    handleAirport(value) {
-      //循环判断满足条件
+  computed: {
+    //筛选多个条件
+    filter() {
       const newarr = this.data.flights.filter(v => {
-        return v.org_airport_name === value;
+        //反证法  假设所有条件都满足
+        let valid = true;
+        // 有数据的时候再执行
+        //机场
+        if (this.airport && this.airport !== v.org_airport_name) {
+          //不满足不返回
+          valid = false;
+        }
+        //出发时间
+        if (this.flightTimes) {
+          //拿到选择时间数组
+          const arr = this.flightTimes.split(",");
+          const trr = v.dep_time.split(":");
+          if (
+            !(
+              Number(trr[0]) >= Number(arr[0]) &&
+              Number(trr[0]) < Number(arr[1])
+            )
+          ) {
+            //不满足
+            valid = false;
+          }
+        }
+        //航空公司
+        if (this.company && this.company !== v.airline_name) {
+          //不满足
+          valid = false;
+        }
+        //机型大小
+        if (this.airSize && this.airSize !== v.plane_size) {
+          //不满足
+          valid = false;
+        }
+        //retrun 如果 为true就将当前的循环项返回
+        return valid;
       });
       //发送事件给父组件
       this.$emit("getData", newarr);
+      //只需要执行不需要数据在页面展示返回空
+      return "";
+    }
+  },
+  methods: {
+    // 选择机场时候触发
+    handleAirport(value) {
+      //   //循环判断满足条件
+      //   const newarr = this.data.flights.filter(v => {
+      //     return v.org_airport_name === value;
+      //   });
+      //   //发送事件给父组件
+      //   this.$emit("getData", newarr);
     },
 
     // 选择出发时间时候触发
     handleFlightTimes(value) {
-      console.log(value);
-      //拿到选择时间数组
-      const arr = value.split(",");
-      const newarr = this.data.flights.filter(v => {
-        const trr = v.dep_time.split(":");
-        return (
-          Number(trr[0]) >= Number(arr[0]) && Number(trr[0]) < Number(arr[1])
-        );
-      });
-      this.$emit("getData", newarr);
+      //   console.log(value);
+      //   //拿到选择时间数组
+      //   const arr = value.split(",");
+      //   const newarr = this.data.flights.filter(v => {
+      //     const trr = v.dep_time.split(":");
+      //     return (
+      //       Number(trr[0]) >= Number(arr[0]) && Number(trr[0]) < Number(arr[1])
+      //     );
+      //   });
+      //   this.$emit("getData", newarr);
     },
 
     // 选择航空公司时候触发
     handleCompany(value) {
-      //循环判断满足条件
-      const newarr = this.data.flights.filter(v => {
-        return v.airline_name === value;
-      });
-      //发送事件给父组件
-      this.$emit("getData", newarr);
+      //   //循环判断满足条件
+      //   const newarr = this.data.flights.filter(v => {
+      //     return v.airline_name === value;
+      //   });
+      //   //发送事件给父组件
+      //   this.$emit("getData", newarr);
     },
 
     // 选择机型时候触发
     handleAirSize(value) {
-      //循环判断满足条件
-      const newarr = this.data.flights.filter(v => {
-        return v.plane_size === value;
-      });
-      //发送事件给父组件
-      this.$emit("getData", newarr);
+      //   //循环判断满足条件
+      //   const newarr = this.data.flights.filter(v => {
+      //     return v.plane_size === value;
+      //   });
+      //   //发送事件给父组件
+      //   this.$emit("getData", newarr);
     },
 
     // 撤销条件时候触发

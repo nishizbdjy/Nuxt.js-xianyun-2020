@@ -180,7 +180,14 @@ export default {
     },
 
     // 撤销条件时候触发
-    handleFiltersCancel() {}
+    handleFiltersCancel() {
+      //将值清空
+      this.airport = ""; // 机场
+      this.flightTimes = ""; // 出发时间
+      this.company = ""; // 航空公司
+      this.airSize = ""; // 机型大小
+      //会自动触发计算属性
+    }
   }
 };
 </script>

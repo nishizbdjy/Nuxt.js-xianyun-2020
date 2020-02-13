@@ -22,8 +22,8 @@
           <el-option
             v-for="(item,index) in data.options.flightTimes"
             :key="index"
-            :label="`${item.from}:00 - ${item.to}:00`"
-            value="1"
+            :label="`${item.from}:00-${item.to}:00`"
+            :value="`${item.from},${item.to}`"
           ></el-option>
         </el-select>
       </el-col>
@@ -88,10 +88,28 @@ export default {
   },
   methods: {
     // 选择机场时候触发
-    handleAirport(value) {},
+    handleAirport(value) {
+      //循环判断满足条件
+      const newarr = this.data.flights.filter(v => {
+        return v.org_airport_name === value;
+      });
+      //发送事件给父组件
+      this.$emit("getData", newarr);
+    },
 
     // 选择出发时间时候触发
-    handleFlightTimes(value) {},
+    handleFlightTimes(value) {
+      console.log(value);
+      //拿到选择时间数组
+      const arr = value.split(",");
+      const newarr = this.data.flights.filter(v => {
+        const trr = v.dep_time.split(":");
+        return (
+          Number(trr[0]) >= Number(arr[0]) && Number(trr[0]) < Number(arr[1])
+        );
+      });
+      this.$emit("getData", newarr);
+    },
 
     // 选择航空公司时候触发
     handleCompany(value) {
@@ -99,13 +117,19 @@ export default {
       const newarr = this.data.flights.filter(v => {
         return v.airline_name === value;
       });
-      console.log(newarr);
       //发送事件给父组件
-      this.$emit('getData',newarr)
+      this.$emit("getData", newarr);
     },
 
     // 选择机型时候触发
-    handleAirSize(value) {},
+    handleAirSize(value) {
+      //循环判断满足条件
+      const newarr = this.data.flights.filter(v => {
+        return v.plane_size === value;
+      });
+      //发送事件给父组件
+      this.$emit("getData", newarr);
+    },
 
     // 撤销条件时候触发
     handleFiltersCancel() {}

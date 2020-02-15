@@ -132,7 +132,79 @@ export default {
     },
 
     // 提交订单
-    handleSubmit() {}
+    handleSubmit() {
+      //自己创建验证规则
+      const rules = {
+        //用户列表
+        users: {
+          //错误时的提示
+          errMessage: "乘机人信息不能为空",
+          //判断是否符合的函数
+          vaildator: () => {
+            //假设符合
+            let valid = true;
+            // 列表循环判断
+            this.form.users.forEach(e => {
+              if (!e.username || !e.id) {
+                //只要有一项不满足就为false
+                valid = false;
+              }
+            });
+            return valid;
+          }
+        },
+        //联系人名字
+        contactName: {
+          errMessage: "联系人名字不能为空",
+          vaildator: () => {
+            return !!this.form.contactName;
+          }
+        },
+        //联系人电话
+        contactPhone: {
+          errMessage: "联系人电话不能为空",
+          vaildator: () => {
+            return !!this.form.contactPhone;
+          }
+        },
+        //手机验证码
+        captcha: {
+          errMessage: "请输入验证码",
+          vaildator: () => {
+            return !!this.form.captcha;
+          }
+        }
+      };
+      //循环以上方法找到为false的 提示用户
+      let valid = true; //假设所有都是通过的
+      Object.keys(rules).forEach(v => {
+        //避免重复提示
+        //return结束不了循环，但是可以终止函数下面代码的执行，所有当有一个不满足就一直为false阻止下面的代码执行，它还在循环已经没用的
+        if (!valid) return;
+        //调用每一个的验证函数
+        const yanzheng = rules[v].vaildator();
+        //判断是否false
+        if (!yanzheng) {
+          //提示用户
+          this.$message(rules[v].errMessage);
+          //设为false
+          valid = false;
+        }
+      });
+      //验证失败 返回
+      if (!valid) return;
+      //调用接口提交订单
+      this.$axios({
+          url : '/airorders',
+          method:"POST",
+          data:this.form,
+          headers:{
+              Authorization: `Bearer `+this.$store.state.user.userinfo.token
+          }
+      }).then(res=>{
+          console.log(res);
+      })
+    }
   },
   mounted() {
     //根据id获取机票信息
@@ -143,7 +215,7 @@ export default {
         seat_xid
       }
     }).then(res => {
-      console.log(res);
+    //   console.log(res);
       this.flightsData = res.data;
     });
   }

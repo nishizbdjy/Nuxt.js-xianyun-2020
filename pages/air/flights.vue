@@ -86,14 +86,12 @@ export default {
     //  to:目标路由对象
     //  from:当前路由对象
     //  next:下一步
-    //太快参数还是之前的路由，没有的，等路由参数变化
-    setTimeout(() => {
-      //调用获取机票列表
-      this.huoquFlights();
-    }, 100);
+    next();
+    //调用获取机票列表
+    this.huoquFlights();
+
     //重置当前页数
     this.pageIndex = 1;
-    next();
   },
   mounted() {
     //调用获取机票列表

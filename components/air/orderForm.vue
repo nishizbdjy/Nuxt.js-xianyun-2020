@@ -106,7 +106,30 @@ export default {
       }
     },
     // 发送手机验证码
-    handleSendCaptcha() {},
+    handleSendCaptcha() {
+      //判断用户是否填写了手机号
+      if (this.form.contactPhone) {
+        //手机号是否符合格式
+        let trr = /^1[3-9][0-9]{9}$/.test(this.form.contactPhone);
+        if (!trr) {
+          //格式错误
+          this.$message("手机号格式错误!");
+        } else {
+          //调用发送验证码
+          this.$store
+            .dispatch("user/hqyanzhengma", this.form.contactPhone)
+            .then(res => {
+              this.$notify({
+                //展示给用户
+                message: `模拟验证码为${res.data.code}`,
+                type: "success"
+              });
+            });
+        }
+      } else {
+        this.$message("请输入手机号!");
+      }
+    },
 
     // 提交订单
     handleSubmit() {}

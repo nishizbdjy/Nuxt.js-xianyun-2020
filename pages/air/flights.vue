@@ -10,7 +10,7 @@
 
         <!-- 航班信息 -->
         <div v-if="dataList.length!==0">
-        <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item"/>
+          <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item" />
         </div>
         <div v-else class="meiyou">没有该航班o(´^｀)o</div>
         <!-- 分页组件 -->
@@ -28,7 +28,7 @@
       <!-- 侧边栏 -->
       <div class="aside">
         <!-- 侧边栏组件 -->
-        <flightsAside/>
+        <flightsAside />
       </div>
     </el-row>
   </section>
@@ -42,7 +42,7 @@ import FlightsItem from "@/components/air/flightsItem.vue";
 //筛选模块
 import FlightsFilters from "@/components/air/flightsFilters.vue";
 //历史记录组件
-import FlightsAside from '@/components/air/flightsAside'
+import FlightsAside from "@/components/air/flightsAside";
 export default {
   data() {
     return {
@@ -69,21 +69,35 @@ export default {
     FlightsListHead, //头部组件
     FlightsItem, //机票列表组件
     FlightsFilters, //筛选组件
-    FlightsAside,//搜索历史组件
+    FlightsAside //搜索历史组件
+  },
+  // watch: {
+  //   //历史记录 监听参数的变化
+  //   $route() {
+  //     //调用获取机票列表
+  //     this.huoquFlights();
+  //     //重置当前页数
+  //     this.pageIndex = 1;
+  //   }
+  // },
+  //使用组件守卫的方式 搜索历史记录
+  //路由改变 组件复用的时候执行
+  beforeRouteUpdate(to, from, next) {
+    //  to:目标路由对象
+    //  from:当前路由对象
+    //  next:下一步
+    //太快参数还是之前的路由，没有的，等路由参数变化
+    setTimeout(() => {
+      //调用获取机票列表
+      this.huoquFlights();
+    }, 100);
+    //重置当前页数
+    this.pageIndex = 1;
+    next();
   },
   mounted() {
-    //获取机票列表
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      // console.log(res);
-      this.FlighsListdata = res.data;
-      //拷贝一份
-      this.Flighsdata = {...res.data}
-      //将总条数赋值
-      this.zongshu = res.data.total;
-    });
+    //调用获取机票列表
+    this.huoquFlights();
   },
   computed: {
     dataList() {
@@ -101,6 +115,20 @@ export default {
     }
   },
   methods: {
+    //封装获取机票列表
+    huoquFlights() {
+      this.$axios({
+        url: "/airs",
+        params: this.$route.query
+      }).then(res => {
+        // console.log(res);
+        this.FlighsListdata = res.data;
+        //拷贝一份
+        this.Flighsdata = { ...res.data };
+        //将总条数赋值
+        this.zongshu = res.data.total;
+      });
+    },
     //切换每页显示数时触发
     handleSizeChange(val) {
       this.pageSize = val;
@@ -121,7 +149,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.meiyou{
+.meiyou {
   font-size: 15px;
   color: red;
   text-align: center;

@@ -30,7 +30,11 @@
       <h2>保险</h2>
       <div>
         <div class="insurance-item" v-for="(item,index) in flightsData.insurances" :key="index">
-          <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border></el-checkbox>
+          <el-checkbox
+            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            border
+            @change="handleInsurance(item.id)"
+          ></el-checkbox>
         </div>
       </div>
     </div>
@@ -86,9 +90,21 @@ export default {
 
     // 移除乘机人
     handleDeleteUser(index) {
-    this.form.users.splice(index,1)
+      this.form.users.splice(index, 1);
     },
-
+    //选择保险
+    handleInsurance(id) {
+      //判断已是否存在id
+      const index = this.form.insurances.indexOf(id);
+      //说明已经存在，用户要取消选择
+      if (index != -1) {
+        //删除存在的
+        this.form.insurances.splice(index, 1);
+      } else {
+        // 说明用户要添加
+        this.form.insurances.push(id);
+      }
+    },
     // 发送手机验证码
     handleSendCaptcha() {},
 

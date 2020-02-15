@@ -3,9 +3,9 @@
     <div class="air-column">
       <h2>乘机人</h2>
       <el-form class="member-info">
-        <div class="member-info-item">
+        <div class="member-info-item"  v-for="(item,index) in form.users" :key="index">
           <el-form-item label="乘机人类型">
-            <el-input placeholder="姓名" class="input-with-select">
+            <el-input placeholder="姓名" class="input-with-select" v-model="item.username">
               <el-select slot="prepend" value="1" placeholder="请选择">
                 <el-option label="成人" value="1"></el-option>
               </el-select>
@@ -13,13 +13,12 @@
           </el-form-item>
 
           <el-form-item label="证件类型">
-            <el-input placeholder="证件号码" class="input-with-select">
+            <el-input placeholder="证件号码" class="input-with-select"  v-model="item.id">
               <el-select slot="prepend" value="1" placeholder="请选择">
                 <el-option label="身份证" value="1" :checked="true"></el-option>
               </el-select>
             </el-input>
           </el-form-item>
-
           <span class="delete-user" @click="handleDeleteUser()">-</span>
         </div>
       </el-form>
@@ -30,8 +29,8 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item">
-          <el-checkbox label="航空意外险：￥30/份×1  最高赔付260万" border></el-checkbox>
+        <div class="insurance-item" v-for="(item,index) in flightsData.insurances" :key="index">
+          <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border></el-checkbox>
         </div>
       </div>
     </div>
@@ -41,11 +40,11 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="form.contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -53,7 +52,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="form.captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -64,6 +63,21 @@
 
 <script>
 export default {
+  data() {
+    return {
+      form: {
+        users: [{ username: "", id: "" }], //用户列表
+        insurances: [], //保险id
+        contactName: "", //联系人名字
+        contactPhone: "", //联系人电话
+        captcha: "", //手机验证码
+        invoice: false, //是否需要发票
+        seat_xid: this.$route.query.seat_xid, //座位id
+        air: this.$route.query.id //航班id
+      },
+      flightsData: {} //存储机票详情数据
+    };
+  },
   methods: {
     // 添加乘机人
     handleAddUsers() {},
@@ -76,6 +90,19 @@ export default {
 
     // 提交订单
     handleSubmit() {}
+  },
+  mounted() {
+    //根据id获取机票信息
+    const { id, seat_xid } = this.$route.query;
+    this.$axios({
+      url: `/airs/${id}`,
+      prsams: {
+        seat_xid
+      }
+    }).then(res => {
+      console.log(res);
+      this.flightsData =res.data;
+    });
   }
 };
 </script>

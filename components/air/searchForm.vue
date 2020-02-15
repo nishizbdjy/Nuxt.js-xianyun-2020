@@ -200,9 +200,12 @@ export default {
       } else if (!this.form.departDate) {
         this.$message("请填写日期");
       } else {
+        //调用方法 存储历史记录
+        this.$store.commit('air/cunchuHistory',this.form)
         this.$router.push({ path: "/air/flights", query: this.form });
       }
     },
+    //封装获取城市
     huoquChengshi(value) {
       return this.$axios({
         url: "/airs/city",

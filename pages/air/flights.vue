@@ -9,7 +9,10 @@
         <FlightsListHead />
 
         <!-- 航班信息 -->
-        <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item" />
+        <div v-if="dataList.length!==0">
+        <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item"/>
+        </div>
+        <div v-else class="meiyou">没有该航班o(´^｀)o</div>
         <!-- 分页组件 -->
         <el-pagination
           @size-change="handleSizeChange"
@@ -114,6 +117,13 @@ export default {
 </script>
 
 <style scoped lang="less">
+.meiyou{
+  font-size: 15px;
+  color: red;
+  text-align: center;
+  height: 50px;
+  line-height: 48px;
+}
 .contianer {
   width: 1000px;
   margin: 20px auto;

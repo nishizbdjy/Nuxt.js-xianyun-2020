@@ -62,6 +62,8 @@
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
+    <!-- 调用计算总价 -->
+    <span>{{totalPrices}}</span>
   </div>
 </template>
 
@@ -130,7 +132,6 @@ export default {
         this.$message("请输入手机号!");
       }
     },
-
     // 提交订单
     handleSubmit() {
       //自己创建验证规则
@@ -195,15 +196,43 @@ export default {
       if (!valid) return;
       //调用接口提交订单
       this.$axios({
-          url : '/airorders',
-          method:"POST",
-          data:this.form,
-          headers:{
-              Authorization: `Bearer `+this.$store.state.user.userinfo.token
-          }
-      }).then(res=>{
-          console.log(res);
-      })
+        url: "/airorders",
+        method: "POST",
+        data: this.form,
+        headers: {
+          Authorization: `Bearer ` + this.$store.state.user.userinfo.token
+        }
+      }).then(res => {
+        console.log(res);
+      });
+    }
+  },
+  computed: {
+    //由于数据是一样的，在这里计算总价
+    totalPrices() {
+      //判断数据还没回来
+      if (!this.flightsData.seat_infos) {
+        return;
+      }
+      let price = 0; //价格
+      //成人机票
+      price += this.flightsData.seat_infos.org_settle_price;
+      //机建/燃油
+      price += this.flightsData.airport_tax_audlet;
+      //保险
+      //循环保险数据，判断用户选择的保险数组里面是否有对应的id
+      this.flightsData.insurances.forEach(v => {
+        const index = this.form.insurances.indexOf(v.id);
+        if (index !== -1) {
+          //说明该项保险有
+          price += v.price;
+        }
+      });
+      //根据乘机人*
+      price *= this.form.users.length;
+      //存储到store总价格
+      this.$store.commit("air/storageAllPrice", price);
+      return "";
     }
   },
   mounted() {
@@ -215,10 +244,10 @@ export default {
         seat_xid
       }
     }).then(res => {
-      console.log(res);
+      // console.log(res);
       this.flightsData = res.data;
-      //调用 存储总价展示组件的机票数据
-      this.$store.commit('air/addOrderDetail',res.data)
+      //调用 存储总价展示组件的机票数据 不会动它数据不用拷贝也可以
+      this.$store.commit("air/addOrderDetail", { ...res.data });
     });
   }
 };

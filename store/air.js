@@ -4,10 +4,12 @@ export const state = () => {
         //历史查询记录
         history: [],
         //总价展示组件的机票数据
-        orderDetail:{
-          //防止异步加载
-          seat_infos:{}
-        }
+        orderDetail: {
+            //防止异步加载
+            seat_infos: {}
+        },
+        //总价格
+        allPrice: 0
     }
 }
 //存储历史查询的方法
@@ -21,9 +23,12 @@ export const mutations = {
         }
     },
     //存储总价展示组件的机票数据
-    addOrderDetail(state,data){
-       state.orderDetail = data
-       console.log(state.orderDetail);
-       
+    addOrderDetail(state, data) {
+        state.orderDetail = data
+
+    },
+    //存储总价格的方法
+    storageAllPrice(state, data) {
+        state.allPrice = data
     }
 }

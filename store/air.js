@@ -1,7 +1,13 @@
 //历史查询记录的存储
 export const state = () => {
     return {
-        history: []
+        //历史查询记录
+        history: [],
+        //总价展示组件的机票数据
+        orderDetail:{
+          //防止异步加载
+          seat_infos:{}
+        }
     }
 }
 //存储历史查询的方法
@@ -13,5 +19,11 @@ export const mutations = {
         if (state.history.length > 5) {
             state.history.length = 5
         }
+    },
+    //存储总价展示组件的机票数据
+    addOrderDetail(state,data){
+       state.orderDetail = data
+       console.log(state.orderDetail);
+       
     }
 }

@@ -211,12 +211,14 @@ export default {
     const { id, seat_xid } = this.$route.query;
     this.$axios({
       url: `/airs/${id}`,
-      prsams: {
+      params: {
         seat_xid
       }
     }).then(res => {
-    //   console.log(res);
+      console.log(res);
       this.flightsData = res.data;
+      //调用 存储总价展示组件的机票数据
+      this.$store.commit('air/addOrderDetail',res.data)
     });
   }
 };

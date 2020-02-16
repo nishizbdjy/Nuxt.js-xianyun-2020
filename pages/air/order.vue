@@ -7,7 +7,9 @@
       </div>
 
       <!-- 侧边栏 -->
-      <div class="aside"></div>
+      <div class="aside">
+        <OrderAside :data="$store.state.air.orderDetail"/>
+      </div>
     </el-row>
   </div>
 </template>
@@ -15,10 +17,13 @@
 <script>
 //引入表单组件
 import OrderForm from "@/components/air/orderForm.vue";
+//总价的展示
+import OrderAside from "@/components/air/orderAside.vue";
 export default {
   components: {
-    OrderForm //表单组件
-  }
+    OrderForm, //表单组件
+    OrderAside //总价的展示
+  },
 };
 </script>
 

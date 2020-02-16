@@ -86,6 +86,7 @@ export default {
     //  to:目标路由对象
     //  from:当前路由对象
     //  next:下一步
+    //先跳转
     next();
     //调用获取机票列表
     this.huoquFlights();

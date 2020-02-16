@@ -9,7 +9,13 @@ export const state = () => {
             seat_infos: {}
         },
         //总价格
-        allPrice: 0
+        zongjia:{
+            //总价格
+            allPrice: 0,
+            //人数
+            multiple:1
+        }
+        
     }
 }
 //存储历史查询的方法
@@ -29,6 +35,7 @@ export const mutations = {
     },
     //存储总价格的方法
     storageAllPrice(state, data) {
-        state.allPrice = data
+        state.zongjia.allPrice = data.allPrice
+        state.zongjia.multiple = data.multiple
     }
 }

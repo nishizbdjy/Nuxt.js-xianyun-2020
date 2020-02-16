@@ -28,17 +28,17 @@
     <el-row type="flex" justify="space-between" class="info-bar">
       <span>成人机票</span>
       <span>￥{{data.seat_infos.org_settle_price}}</span>
-      <span>x1</span>
+      <span>x{{$store.state.air.zongjia.multiple}}</span>
     </el-row>
     <el-row type="flex" justify="space-between" class="info-bar">
       <span>机建＋燃油</span>
       <span>¥{{data.airport_tax_audlet}}/人/单程</span>
-      <span>x1</span>
+      <span>x{{$store.state.air.zongjia.multiple}}</span>
     </el-row>
     <el-row type="flex" justify="space-between" align="middle" class="info-bar">
       <span>应付总额：</span>
         <!-- 转换为数字取两位小数 -->
-      <span class="price">￥{{Number($store.state.air.allPrice).toFixed(2)}}</span>
+      <span class="price">￥{{Number($store.state.air.zongjia.allPrice).toFixed(2)}}</span>
     </el-row>
   </div>
 </template>

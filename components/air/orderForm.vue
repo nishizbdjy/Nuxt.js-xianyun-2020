@@ -31,7 +31,7 @@
       <div>
         <div class="insurance-item" v-for="(item,index) in flightsData.insurances" :key="index">
           <el-checkbox
-            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            :label="`${item.type}：￥${item.price}/份×${form.users.length}  最高赔付${item.compensation}`"
             border
             @change="handleInsurance(item.id)"
           ></el-checkbox>
@@ -231,7 +231,7 @@ export default {
       //根据乘机人*
       price *= this.form.users.length;
       //存储到store总价格
-      this.$store.commit("air/storageAllPrice", price);
+      this.$store.commit("air/storageAllPrice", {allPrice:price,multiple:this.form.users.length});
       return "";
     }
   },

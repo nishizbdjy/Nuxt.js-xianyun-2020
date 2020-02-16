@@ -49,17 +49,31 @@ export default {
         //如果成功
         if (valid) {
           this.$store.dispatch("user/login", this.form).then(() => {
-            this.$message.success("登陆成功,即将跳转到主页...");
-            //跳转页面
-            setTimeout(() => {
-              this.$router.push({ path: "/" });
-            }, 1000);
+            //判断是否是从提交订单其他页面到来的
+            if (this.$route.query.returnUrl) {
+              //说明是从提交订单也过来的
+              this.$message.success("登陆成功,即将跳转到订单页...");
+              //跳转页面
+              setTimeout(() => {
+                //replace 替换掉路由历史记录
+                this.$router.replace({ path: this.$route.query.returnUrl });
+              }, 800);
+            } else {
+              this.$message.success("登陆成功,即将跳转到主页...");
+              //跳转主页面
+              setTimeout(() => {
+                this.$router.push({ path: "/" });
+              }, 1000);
+            }
           });
         } else {
           this.$message("数据不合法");
         }
       });
     }
+  },
+  mounted() {
+    console.log(this.$route);
   }
 };
 </script>

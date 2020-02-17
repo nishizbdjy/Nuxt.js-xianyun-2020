@@ -3,14 +3,14 @@
     <div class="main">
       <div class="pay-title">
         支付总金额
-        <span class="pay-price">￥ 1000</span>
+        <span class="pay-price">￥ {{orderDetail.price}}</span>
       </div>
       <div class="pay-main">
         <h4>微信支付</h4>
         <el-row type="flex" justify="space-between" align="middle" class="pay-qrcode">
           <div class="qrcode">
             <!-- 二维码 -->
-            <canvas id="qrcode-stage"></canvas>
+            <canvas ref="qrcode"></canvas>
             <p>请使用微信扫一扫</p>
             <p>扫描二维码支付</p>
           </div>
@@ -24,7 +24,37 @@
 </template>
 
 <script>
-export default {};
+//引入二维码生成插件
+import  QRCode from 'qrcode'
+export default {
+  data() {
+    return {
+      //订单详情
+      orderDetail:{}
+    };
+  },
+  mounted() {
+    //store未回来的情况 setTimeout会等组件加载完成后执行 
+    setTimeout(() => {
+      //获取订单详情
+      this.$axios({
+        url: `/airorders/${this.$route.query.id}`,
+        //token
+        headers: {
+          Authorization: "Bearer " + this.$store.state.user.userinfo.token
+        }
+      }).then((res)=>{
+        // console.log(res);
+        //要生成的字符串
+        const {code_url} = res.data.payInfo
+        //赋值给订单详情
+        this.orderDetail =res.data
+        //使用插件生成二维码
+        QRCode.toCanvas(this.$refs.qrcode,code_url,{width:200})
+      })
+    }, 0);
+  }
+};
 </script>
 
 <style scoped lang="less">

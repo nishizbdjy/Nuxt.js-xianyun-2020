@@ -25,16 +25,18 @@
 
 <script>
 //引入二维码生成插件
-import  QRCode from 'qrcode'
+import QRCode from "qrcode";
 export default {
   data() {
     return {
       //订单详情
-      orderDetail:{}
+      orderDetail: {},
+      //定时器
+      timer: ""
     };
   },
   mounted() {
-    //store未回来的情况 setTimeout会等组件加载完成后执行 
+    //store未回来的情况 setTimeout会等组件加载完成后执行
     setTimeout(() => {
       //获取订单详情
       this.$axios({
@@ -43,16 +45,57 @@ export default {
         headers: {
           Authorization: "Bearer " + this.$store.state.user.userinfo.token
         }
-      }).then((res)=>{
+      }).then(res => {
         // console.log(res);
         //要生成的字符串
-        const {code_url} = res.data.payInfo
+        const { code_url } = res.data.payInfo;
         //赋值给订单详情
-        this.orderDetail =res.data
+        this.orderDetail = res.data;
         //使用插件生成二维码
-        QRCode.toCanvas(this.$refs.qrcode,code_url,{width:200})
-      })
+        QRCode.toCanvas(this.$refs.qrcode, code_url, { width: 200 });
+        //使用定时器的方式不停发送请求，获取支付状态
+        this.timer = setInterval(() => {
+          //调用获取支付状态
+          this.isPay();
+        }, 3000);
+      });
     }, 0);
+  },
+  //该钩子函数会在组件销毁的时候触发
+  destroyed() {
+    //加入用户取消支付，回到其他页面，定时器还会执行，我们要将它停止
+    clearInterval(this.timer);
+  },
+  methods: {
+    //获取订单支付状态
+    isPay() {
+      // 订单id 金额 订单编号
+      const { id, price, orderNo } = this.orderDetail;
+      this.$axios({
+        url: "/airorders/checkpay",
+        method: "POST",
+        data: {
+          id,
+          nonce_str: price,
+          out_trade_no: orderNo
+        },
+        //token
+        headers: {
+          Authorization: "Bearer " + this.$store.state.user.userinfo.token
+        }
+      }).then(res => {
+        //判断是否登陆
+        if (res.data.statusTxt === "支付完成") {
+          //结束定时
+          clearInterval(this.timer);
+          //提示用户支付成功
+          this.$alert(`订单${res.data.statusTxt}`, "感谢购票", {
+            confirmButtonText: "确定",
+            type: "success"
+          });
+        }
+      });
+    }
   }
 };
 </script>

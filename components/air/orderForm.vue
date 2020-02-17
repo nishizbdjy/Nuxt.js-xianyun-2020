@@ -204,6 +204,14 @@ export default {
         }
       }).then(res => {
         console.log(res);
+        if(res.status ===200){
+        //提示用户
+        this.$message.success('提交成功，正在生成订单...')
+        //跳转
+        setTimeout(()=>{
+            this.$router.push({path:'/air/pay',query:{id:res.data.data.id}})
+        },1500)              
+        }
       });
     }
   },

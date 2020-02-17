@@ -203,7 +203,7 @@ export default {
           Authorization: `Bearer ` + this.$store.state.user.userinfo.token
         }
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         if(res.status ===200){
         //提示用户
         this.$message.success('提交成功，正在生成订单...')
